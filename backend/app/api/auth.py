@@ -1,13 +1,13 @@
 from fastapi import APIRouter, Depends, Response
 from sqlalchemy.orm import Session
-
+from app.api.deps import get_usuario_atual
+from app.models.usuario import Usuario
 from app.database.session import get_db
 from app.schemas.auth import LoginRequest, RefreshRequest
 from app.services import auth_service
 from app.core.config import settings
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
-
 
 @router.post("/login")
 def login(dados: LoginRequest, response: Response, db: Session = Depends(get_db)):
@@ -37,7 +37,6 @@ def login(dados: LoginRequest, response: Response, db: Session = Depends(get_db)
         "is_admin": usuario.is_admin,
     }
 
-
 @router.post("/refresh")
 def refresh(dados: RefreshRequest, response: Response, db: Session = Depends(get_db)):
     novo_access_token = auth_service.renovar_access_token(db, dados.refresh_token)
@@ -53,9 +52,16 @@ def refresh(dados: RefreshRequest, response: Response, db: Session = Depends(get
 
     return {"access_token": novo_access_token}
 
-
 @router.post("/logout")
 def logout(response: Response):
     response.delete_cookie("access_token")
     response.delete_cookie("refresh_token")
     return {"detail": "Logout realizado"}
+
+@router.get("/me")
+def me(usuario: Usuario = Depends(get_usuario_atual)):
+    return {
+        "id": usuario.id,
+        "username": usuario.username,
+        "is_admin": usuario.is_admin,
+    }
