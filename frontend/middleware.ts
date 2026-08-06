@@ -9,6 +9,7 @@ import { decodificarJWT, tokenExpirado, renovarToken } from "@/lib/auth/jwt"
 
 export async function middleware(request: NextRequest) {
   const enderecoCompleto = request.nextUrl.pathname
+  console.log("MIDDLEWARE RODOU PARA:", enderecoCompleto)
 
   const tokenCookie = request.cookies.get("access_token")
   const estaAutenticado = Boolean(tokenCookie?.value)
