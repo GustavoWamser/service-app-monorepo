@@ -35,53 +35,60 @@ export default function RegistroPage() {
   }
 
   return (
-    <div>
-      <h1>Criar conta</h1>
+    <main className="mx-auto flex min-h-[80vh] max-w-sm flex-col justify-center px-6">
+      <h1 className="text-3xl font-semibold tracking-tight">Criar conta</h1>
 
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="mt-8 flex flex-col gap-4">
         <div>
-          <label htmlFor="username">Username</label>
+          <label htmlFor="username" className="text-sm text-black/60">Username</label>
           <input
             id="username"
-            type="text"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             required
+            className="mt-1 w-full rounded-lg border border-black/15 px-4 py-2.5 text-sm outline-none focus:border-black"
           />
         </div>
 
         <div>
-          <label htmlFor="senha">Senha</label>
+          <label htmlFor="senha" className="text-sm text-black/60">Senha</label>
           <input
             id="senha"
             type="password"
             value={senha}
             onChange={(e) => setSenha(e.target.value)}
             required
+            className="mt-1 w-full rounded-lg border border-black/15 px-4 py-2.5 text-sm outline-none focus:border-black"
           />
         </div>
 
         <div>
-          <label htmlFor="confirmarSenha">Confirmar senha</label>
+          <label htmlFor="confirmarSenha" className="text-sm text-black/60">Confirmar senha</label>
           <input
             id="confirmarSenha"
             type="password"
             value={confirmarSenha}
             onChange={(e) => setConfirmarSenha(e.target.value)}
             required
+            className="mt-1 w-full rounded-lg border border-black/15 px-4 py-2.5 text-sm outline-none focus:border-black"
           />
         </div>
 
-        {erro && <p style={{ color: "red" }}>{erro}</p>}
+        {erro && <p className="text-sm text-red-600">{erro}</p>}
 
-        <button type="submit" disabled={carregando}>
+        <button
+          type="submit"
+          disabled={carregando}
+          className="mt-2 rounded-full bg-black py-2.5 text-sm text-white transition-colors hover:bg-black/80 disabled:opacity-40"
+        >
           {carregando ? "Criando..." : "Criar conta"}
         </button>
       </form>
 
-      <p>
-        Já tem conta? <a href="/login">Entrar</a>
+      <p className="mt-6 text-sm text-black/50">
+        Já tem conta?{" "}
+        <a href="/login" className="text-black underline">Entrar</a>
       </p>
-    </div>
+    </main>
   )
 }

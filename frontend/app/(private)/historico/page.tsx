@@ -4,35 +4,39 @@ export default async function HistoricoPage() {
   const movimentacoes = await listarTodasMovimentacoes()
 
   return (
-    <div>
-      <h1>Histórico geral de movimentações</h1>
+    <main className="mx-auto max-w-4xl px-6 py-16">
+      <h1 className="text-3xl font-semibold tracking-tight">Histórico geral</h1>
 
-      {movimentacoes.length === 0 && <p>Nenhuma movimentação registrada.</p>}
+      {movimentacoes.length === 0 && (
+        <p className="mt-12 text-black/40">Nenhuma movimentação registrada.</p>
+      )}
 
-      <table>
-        <thead>
-          <tr>
-            <th>Data</th>
-            <th>Tipo</th>
-            <th>Produto</th>
-            <th>Usuário</th>
-            <th>Quantidade</th>
-            <th>Preço unitário</th>
-          </tr>
-        </thead>
-        <tbody>
-          {movimentacoes.map((mov) => (
-            <tr key={mov.id}>
-              <td>{new Date(mov.criado_em).toLocaleString("pt-BR")}</td>
-              <td>{mov.tipo === "venda" ? "Venda" : "Compra"}</td>
-              <td>{mov.produto_nome}</td>
-              <td>{mov.usuario_username}</td>
-              <td>{mov.quantidade}</td>
-              <td>R$ {mov.preco.toFixed(2)}</td>
+      <div className="mt-10 overflow-x-auto">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="border-b border-black/10 text-left text-black/40">
+              <th className="py-3 font-normal">Data</th>
+              <th className="py-3 font-normal">Tipo</th>
+              <th className="py-3 font-normal">Produto</th>
+              <th className="py-3 font-normal">Usuário</th>
+              <th className="py-3 font-normal">Qtd</th>
+              <th className="py-3 font-normal">Preço</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+          </thead>
+          <tbody className="divide-y divide-black/5">
+            {movimentacoes.map((mov) => (
+              <tr key={mov.id}>
+                <td className="py-3">{new Date(mov.criado_em).toLocaleString("pt-BR")}</td>
+                <td className="py-3">{mov.tipo === "venda" ? "Venda" : "Compra"}</td>
+                <td className="py-3">{mov.produto_nome}</td>
+                <td className="py-3">{mov.usuario_username}</td>
+                <td className="py-3">{mov.quantidade}</td>
+                <td className="py-3">R$ {mov.preco.toFixed(2)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </main>
   )
 }

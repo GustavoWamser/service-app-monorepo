@@ -23,7 +23,7 @@ export default function Navbar() {
       }
     }
     carregar()
-  }, [pathname]) // reavalia sempre que a rota muda (ex: acabou de logar)
+  }, [pathname])
 
   async function handleLogout() {
     await logout()
@@ -32,32 +32,62 @@ export default function Navbar() {
     router.refresh()
   }
 
-  if (!carregado) return null
+  if (!carregado) return <div className="h-14 border-b border-black/10" />
 
   return (
-    <nav style={{ display: "flex", gap: "1rem", padding: "1rem", borderBottom: "1px solid #ccc" }}>
-      <Link href="/produtos">Produtos</Link>
+    <nav className="sticky top-0 z-50 flex items-center gap-8 border-b border-black/10 bg-white/80 px-6 py-4 backdrop-blur-md">
+      <Link href="/produtos" className="text-sm font-medium tracking-tight">
+        Loja
+      </Link>
 
-      {usuario && <Link href="/dashboard">Dashboard</Link>}
+      <div className="flex items-center gap-6 text-sm text-black/70">
+        <Link href="/produtos" className="transition-colors hover:text-black">
+          Produtos
+        </Link>
 
-      {usuario?.is_admin && (
-        <>
-          <Link href="/admin/produtos">Admin Produtos</Link>
-          <Link href="/admin/usuarios">Admin Usuários</Link>
-          <Link href="/historico">Histórico</Link>
-        </>
-      )}
+        {usuario && (
+          <Link href="/dashboard" className="transition-colors hover:text-black">
+            Dashboard
+          </Link>
+        )}
 
-      <div style={{ marginLeft: "auto" }}>
+        {usuario?.is_admin && (
+          <>
+            <Link href="/admin/produtos" className="transition-colors hover:text-black">
+              Admin Produtos
+            </Link>
+            <Link href="/admin/usuarios" className="transition-colors hover:text-black">
+              Admin Usuários
+            </Link>
+            <Link href="/historico" className="transition-colors hover:text-black">
+              Histórico
+            </Link>
+          </>
+        )}
+      </div>
+
+      <div className="ml-auto flex items-center gap-4 text-sm">
         {usuario ? (
           <>
-            <span>Olá, {usuario.username}</span>{" "}
-            <button onClick={handleLogout}>Sair</button>
+            <span className="text-black/60">{usuario.username}</span>
+            <button
+              onClick={handleLogout}
+              className="rounded-full border border-black/10 px-4 py-1.5 transition-colors hover:bg-black hover:text-white"
+            >
+              Sair
+            </button>
           </>
         ) : (
           <>
-            <Link href="/login">Entrar</Link>{" "}
-            <Link href="/registro">Criar conta</Link>
+            <Link href="/login" className="text-black/70 transition-colors hover:text-black">
+              Entrar
+            </Link>
+            <Link
+              href="/registro"
+              className="rounded-full bg-black px-4 py-1.5 text-white transition-colors hover:bg-black/80"
+            >
+              Criar conta
+            </Link>
           </>
         )}
       </div>

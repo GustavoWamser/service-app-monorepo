@@ -11,8 +11,7 @@ export default function AdminUsuariosPage() {
 
   async function carregarUsuarios() {
     try {
-      const dados = await listarUsuarios()
-      setUsuarios(dados)
+      setUsuarios(await listarUsuarios())
     } catch (err) {
       setErro(err instanceof ErroApi ? err.message : "Erro ao carregar usuários")
     }
@@ -24,7 +23,6 @@ export default function AdminUsuariosPage() {
 
   async function handleDeletar(id: number) {
     if (!confirm("Tem certeza que deseja excluir este usuário?")) return
-
     try {
       await deletarUsuario(id)
       await carregarUsuarios()
@@ -34,22 +32,28 @@ export default function AdminUsuariosPage() {
   }
 
   return (
-    <div>
-      <h1>Admin — Usuários</h1>
+    <main className="mx-auto max-w-3xl px-6 py-16">
+      <h1 className="text-3xl font-semibold tracking-tight">Admin — Usuários</h1>
 
-      {erro && <p style={{ color: "red" }}>{erro}</p>}
+      {erro && <p className="mt-4 text-sm text-red-600">{erro}</p>}
 
-      <ul>
+      <div className="mt-10 flex flex-col divide-y divide-black/10">
         {usuarios.map((usuario) => (
-          <li key={usuario.id}>
-            {usuario.username} {usuario.is_admin && "(admin)"}
-            {" "}
-            <Link href={`/admin/usuarios/${usuario.id}`}>Editar</Link>
-            {" "}
-            <button onClick={() => handleDeletar(usuario.id)}>Excluir</button>
-          </li>
+          <div key={usuario.id} className="flex items-center justify-between py-4">
+            <p className="text-sm font-medium">
+              {usuario.username} {usuario.is_admin && <span className="text-black/40">(admin)</span>}
+            </p>
+            <div className="flex items-center gap-3 text-sm">
+              <Link href={`/admin/usuarios/${usuario.id}`} className="text-black/60 hover:text-black">
+                Editar
+              </Link>
+              <button onClick={() => handleDeletar(usuario.id)} className="text-red-600 hover:text-red-800">
+                Excluir
+              </button>
+            </div>
+          </div>
         ))}
-      </ul>
-    </div>
+      </div>
+    </main>
   )
 }
