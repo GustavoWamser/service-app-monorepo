@@ -16,7 +16,6 @@ export async function middleware(request: NextRequest) {
 
   const configuracaoRotaPublica = buscarConfiguracaoRotaPublica(enderecoCompleto)
 
-  // --- Caso 1: rota pública ---
   if (configuracaoRotaPublica) {
     if (estaAutenticado && configuracaoRotaPublica.quandoAutenticado === "redirecionar") {
       return NextResponse.redirect(new URL(ROTA_REDIRECIONAMENTO_AUTENTICADO, request.url))
@@ -24,22 +23,18 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next()
   }
 
-  // --- Caso 2: rota privada, sem cookie de auth ---
   if (!estaAutenticado) {
     return NextResponse.redirect(new URL(ROTA_REDIRECIONAMENTO_NAO_AUTENTICADO, request.url))
   }
 
-  // --- Caso 3: rota privada, com cookie — decodifica o JWT ---
   let payload = decodificarJWT(tokenCookie!.value)
 
   if (!payload) {
-    // token corrompido/ilegível, trata como não autenticado
     const resposta = NextResponse.redirect(new URL(ROTA_REDIRECIONAMENTO_NAO_AUTENTICADO, request.url))
     resposta.cookies.delete("access_token")
     return resposta
   }
 
-  // --- Caso 4: token expirado -> tenta refresh ---
   if (tokenExpirado(payload)) {
     const refreshTokenCookie = request.cookies.get("refresh_token")
 
@@ -72,7 +67,6 @@ export async function middleware(request: NextRequest) {
     return resposta
   }
 
-  // --- Caso 5: rota exige admin ---
   if (ehRotaSomenteAdmin(enderecoCompleto) && !payload.is_admin) {
     return NextResponse.redirect(new URL(ROTA_REDIRECIONAMENTO_AUTENTICADO, request.url))
   }
