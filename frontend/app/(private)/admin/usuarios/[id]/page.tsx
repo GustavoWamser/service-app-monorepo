@@ -36,7 +36,7 @@ export default function EditarUsuarioPage() {
       await atualizarUsuario(usuarioId, {
         username,
         is_admin: isAdmin,
-        ...(senha ? { senha } : {}),   // só manda senha se o campo foi preenchido
+        ...(senha ? { senha } : {}),
       })
       router.push("/admin/usuarios")
     } catch (err) {
@@ -46,50 +46,53 @@ export default function EditarUsuarioPage() {
     }
   }
 
-  if (!carregado) return <div>Carregando...</div>
+  if (!carregado) return <div className="p-16 text-center text-black/40">Carregando...</div>
 
   return (
-    <div>
-      <h1>Editar usuário</h1>
+    <main className="mx-auto max-w-sm px-6 py-16">
+      <h1 className="text-2xl font-semibold tracking-tight">Editar usuário</h1>
 
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="mt-8 flex flex-col gap-4">
         <div>
-          <label htmlFor="username">Username</label>
+          <label className="text-sm text-black/60">Username</label>
           <input
-            id="username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             required
+            className="mt-1 w-full rounded-lg border border-black/15 px-4 py-2.5 text-sm outline-none focus:border-black"
           />
         </div>
 
         <div>
-          <label htmlFor="senha">Nova senha (deixe em branco pra manter)</label>
+          <label className="text-sm text-black/60">Nova senha (deixe em branco pra manter)</label>
           <input
-            id="senha"
             type="password"
             value={senha}
             onChange={(e) => setSenha(e.target.value)}
+            className="mt-1 w-full rounded-lg border border-black/15 px-4 py-2.5 text-sm outline-none focus:border-black"
           />
         </div>
 
-        <div>
-          <label>
-            <input
-              type="checkbox"
-              checked={isAdmin}
-              onChange={(e) => setIsAdmin(e.target.checked)}
-            />
-            {" "}É admin
-          </label>
-        </div>
+        <label className="flex items-center gap-2 text-sm text-black/60">
+          <input
+            type="checkbox"
+            checked={isAdmin}
+            onChange={(e) => setIsAdmin(e.target.checked)}
+            className="h-4 w-4"
+          />
+          É admin
+        </label>
 
-        {erro && <p style={{ color: "red" }}>{erro}</p>}
+        {erro && <p className="text-sm text-red-600">{erro}</p>}
 
-        <button type="submit" disabled={carregando}>
+        <button
+          type="submit"
+          disabled={carregando}
+          className="mt-2 rounded-full bg-black py-2.5 text-sm text-white transition-colors hover:bg-black/80 disabled:opacity-40"
+        >
           {carregando ? "Salvando..." : "Salvar alterações"}
         </button>
       </form>
-    </div>
+    </main>
   )
 }

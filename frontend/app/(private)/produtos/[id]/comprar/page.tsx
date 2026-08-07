@@ -59,39 +59,51 @@ export default function ComprarProdutoPage() {
     }
   }
 
-  if (!produto) return <div>Carregando produto...</div>
+  if (!produto) return <div className="p-16 text-center text-black/40">Carregando produto...</div>
 
   return (
-    <div>
-      <h1>Comprar {produto.nome}</h1>
-      <p>Preço: R$ {produto.preco.toFixed(2)}</p>
-      <p>Estoque disponível: {produto.quantidade}</p>
-      {usuario && <p>Comprando como: {usuario.username}</p>}
+    <main className="mx-auto max-w-sm px-6 py-16">
+      <h1 className="text-2xl font-semibold tracking-tight">{produto.nome}</h1>
+      <p className="mt-2 text-3xl font-semibold">R$ {produto.preco.toFixed(2)}</p>
+      <p className="mt-1 text-sm text-black/40">Estoque disponível: {produto.quantidade}</p>
+      {usuario && <p className="mt-1 text-sm text-black/40">Comprando como: {usuario.username}</p>}
 
       {sucesso ? (
-        <div>
-          <p style={{ color: "green" }}>Compra realizada com sucesso!</p>
-          <button onClick={() => router.push("/produtos")}>Voltar para produtos</button>
+        <div className="mt-8 rounded-2xl border border-black/10 p-6 text-center">
+          <p className="font-medium">Compra realizada com sucesso!</p>
+          <button
+            onClick={() => router.push("/produtos")}
+            className="mt-4 rounded-full bg-black px-4 py-2 text-sm text-white transition-colors hover:bg-black/80"
+          >
+            Voltar para produtos
+          </button>
         </div>
       ) : (
-        <div>
-          <label htmlFor="quantidade">Quantidade</label>
-          <input
-            id="quantidade"
-            type="number"
-            min={1}
-            max={produto.quantidade}
-            value={quantidade}
-            onChange={(e) => setQuantidade(Number(e.target.value))}
-          />
+        <div className="mt-8 flex flex-col gap-4">
+          <div>
+            <label htmlFor="quantidade" className="text-sm text-black/60">Quantidade</label>
+            <input
+              id="quantidade"
+              type="number"
+              min={1}
+              max={produto.quantidade}
+              value={quantidade}
+              onChange={(e) => setQuantidade(Number(e.target.value))}
+              className="mt-1 w-full rounded-lg border border-black/15 px-4 py-2.5 text-sm outline-none focus:border-black"
+            />
+          </div>
 
-          {erro && <p style={{ color: "red" }}>{erro}</p>}
+          {erro && <p className="text-sm text-red-600">{erro}</p>}
 
-          <button onClick={handleComprar} disabled={carregando || !usuario}>
+          <button
+            onClick={handleComprar}
+            disabled={carregando || !usuario}
+            className="rounded-full bg-black py-2.5 text-sm text-white transition-colors hover:bg-black/80 disabled:opacity-40"
+          >
             {carregando ? "Processando..." : "Confirmar compra"}
           </button>
         </div>
       )}
-    </div>
+    </main>
   )
 }

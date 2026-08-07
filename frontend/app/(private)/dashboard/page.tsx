@@ -4,25 +4,31 @@ export default async function DashboardPage() {
   const movimentacoes = await listarMinhasMovimentacoes()
 
   return (
-    <div>
-      <h1>Dashboard</h1>
+    <main className="mx-auto max-w-3xl px-6 py-16">
+      <h1 className="text-3xl font-semibold tracking-tight">Dashboard</h1>
+      <p className="mt-2 text-black/50">Suas movimentações</p>
 
-      <h2>Minhas movimentações</h2>
+      {movimentacoes.length === 0 && (
+        <p className="mt-12 text-black/40">Você ainda não fez nenhuma movimentação.</p>
+      )}
 
-      {movimentacoes.length === 0 && <p>Você ainda não fez nenhuma movimentação.</p>}
-
-      <ul>
+      <div className="mt-10 flex flex-col divide-y divide-black/10">
         {movimentacoes.map((mov) => (
-          <li key={mov.id}>
-            {mov.tipo === "venda" ? "Compra realizada" : "Reposição de estoque"}
-            {" — "}
-            {mov.quantidade}x por R$ {mov.preco.toFixed(2)} cada
-            {" ("}
-            {new Date(mov.criado_em).toLocaleDateString("pt-BR")}
-            {")"}
-          </li>
+          <div key={mov.id} className="flex items-center justify-between py-4">
+            <div>
+              <p className="text-sm font-medium">
+                {mov.tipo === "venda" ? "Compra realizada" : "Reposição de estoque"}
+              </p>
+              <p className="text-xs text-black/40">
+                {new Date(mov.criado_em).toLocaleDateString("pt-BR")}
+              </p>
+            </div>
+            <p className="text-sm text-black/60">
+              {mov.quantidade}x — R$ {mov.preco.toFixed(2)}
+            </p>
+          </div>
         ))}
-      </ul>
-    </div>
+      </div>
+    </main>
   )
 }
