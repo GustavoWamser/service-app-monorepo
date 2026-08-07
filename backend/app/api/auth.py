@@ -5,6 +5,8 @@ from app.database.session import get_db
 from app.schemas.auth import LoginRequest, RefreshRequest
 from app.services import auth_service
 from app.core.config import settings
+from app.api.deps import get_usuario_atual
+from app.models.usuario import Usuario
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
 
@@ -59,3 +61,12 @@ def logout(response: Response):
     response.delete_cookie("access_token")
     response.delete_cookie("refresh_token")
     return {"detail": "Logout realizado"}
+
+
+@router.get("/me")
+def me(usuario: Usuario = Depends(get_usuario_atual)):
+    return {
+        "id": usuario.id,
+        "username": usuario.username,
+        "is_admin": usuario.is_admin,
+    }

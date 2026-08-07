@@ -2,6 +2,8 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import { registrar } from "@/lib/services/auth"
+import { ErroApi } from "@/lib/services/api"
 
 export default function RegistroPage() {
   const router = useRouter()
@@ -23,22 +25,10 @@ export default function RegistroPage() {
     setCarregando(true)
 
     try {
-      const resposta = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/usuarios/`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, senha, is_admin: false }),
-      })
-
-      if (!resposta.ok) {
-        const dados = await resposta.json()
-        setErro(dados.detail ?? "Erro ao criar conta")
-        return
-      }
-
-      // conta criada, manda pro login com um aviso de sucesso
+      await registrar(username, senha)
       router.push("/login?registrado=true")
-    } catch {
-      setErro("Não foi possível conectar à API")
+    } catch (err) {
+      setErro(err instanceof ErroApi ? err.message : "Não foi possível conectar à API")
     } finally {
       setCarregando(false)
     }

@@ -2,19 +2,10 @@
 
 import { useState, useEffect } from "react"
 import { useParams, useRouter } from "next/navigation"
-
-type Produto = {
-  id: number
-  nome: string
-  preco: number
-  quantidade: number
-}
-
-type Usuario = {
-  id: number
-  username: string
-  is_admin: boolean
-}
+import { buscarProduto, type Produto } from "@/lib/services/produtos"
+import { buscarUsuarioLogado, type Usuario } from "@/lib/services/auth"
+import { criarMovimentacao } from "@/lib/services/movimentacoes"
+import { ErroApi } from "@/lib/services/api"
 
 export default function ComprarProdutoPage() {
   const params = useParams()
@@ -30,13 +21,16 @@ export default function ComprarProdutoPage() {
 
   useEffect(() => {
     async function carregarDados() {
-      const [respostaProduto, respostaUsuario] = await Promise.all([
-        fetch(`${process.env.NEXT_PUBLIC_API_URL}/produtos/${produtoId}`),
-        fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/me`, { credentials: "include" }),
-      ])
-
-      if (respostaProduto.ok) setProduto(await respostaProduto.json())
-      if (respostaUsuario.ok) setUsuario(await respostaUsuario.json())
+      try {
+        const [dadosProduto, dadosUsuario] = await Promise.all([
+          buscarProduto(produtoId),
+          buscarUsuarioLogado(),
+        ])
+        setProduto(dadosProduto)
+        setUsuario(dadosUsuario)
+      } catch (err) {
+        setErro(err instanceof ErroApi ? err.message : "Erro ao carregar dados")
+      }
     }
     carregarDados()
   }, [produtoId])
@@ -51,27 +45,15 @@ export default function ComprarProdutoPage() {
     setCarregando(true)
 
     try {
-      const resposta = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/movimentacoes/`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({
-          produto_id: produtoId,
-          usuario_id: usuario.id,
-          tipo: "venda",
-          quantidade,
-        }),
+      await criarMovimentacao({
+        produto_id: produtoId,
+        usuario_id: usuario.id,
+        tipo: "venda",
+        quantidade,
       })
-
-      if (!resposta.ok) {
-        const dados = await resposta.json()
-        setErro(dados.detail ?? "Erro ao registrar compra")
-        return
-      }
-
       setSucesso(true)
-    } catch {
-      setErro("Não foi possível conectar à API")
+    } catch (err) {
+      setErro(err instanceof ErroApi ? err.message : "Não foi possível conectar à API")
     } finally {
       setCarregando(false)
     }

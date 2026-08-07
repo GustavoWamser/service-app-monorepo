@@ -9,8 +9,8 @@ export const ROTAS_PUBLICAS: Record<string, ConfiguracaoRotaPublica> = {
   "/produtos": { quandoAutenticado: "permitir" },
 }
 
-export const ROTA_REDIRECIONAMENTO_NAO_AUTENTICADO = "/login"
-export const ROTA_REDIRECIONAMENTO_AUTENTICADO = "/dashboard"
+export const ROTA_REDIRECIONAMENTO_NAO_AUTENTICADO = "/registro"  
+export const ROTA_REDIRECIONAMENTO_AUTENTICADO = "/produtos" 
 
 export const ROTAS_SOMENTE_ADMIN = [
   "/historico",

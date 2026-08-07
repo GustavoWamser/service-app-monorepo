@@ -8,7 +8,7 @@ class MovimentacaoCreate(BaseModel):
     usuario_id: int
     tipo: TipoMovimentacao
     quantidade: int
-    preco: float | None = None  # se não vier, usamos o preço atual do produto
+    preco: float | None = None
 
 
 class MovimentacaoResponse(BaseModel):
@@ -21,3 +21,8 @@ class MovimentacaoResponse(BaseModel):
     criado_em: datetime
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class MovimentacaoDetalhadaResponse(MovimentacaoResponse):
+    produto_nome: str
+    usuario_username: str

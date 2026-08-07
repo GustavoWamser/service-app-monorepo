@@ -2,6 +2,8 @@
 
 import { Suspense, useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
+import { login } from "@/lib/services/auth"
+import { ErroApi } from "@/lib/services/api"
 
 function LoginForm() {
   const router = useRouter()
@@ -19,23 +21,11 @@ function LoginForm() {
     setCarregando(true)
 
     try {
-      const resposta = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({ username, senha }),
-      })
-
-      if (!resposta.ok) {
-        const dados = await resposta.json()
-        setErro(dados.detail ?? "Erro ao fazer login")
-        return
-      }
-
-      router.push("/dashboard")
+      await login(username, senha)
+      router.push("/produtos")
       router.refresh()
-    } catch {
-      setErro("Não foi possível conectar à API")
+    } catch (err) {
+      setErro(err instanceof ErroApi ? err.message : "Não foi possível conectar à API")
     } finally {
       setCarregando(false)
     }

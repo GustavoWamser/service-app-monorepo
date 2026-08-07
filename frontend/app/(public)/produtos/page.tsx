@@ -1,27 +1,8 @@
 import Link from "next/link"
-
-type Produto = {
-  id: number
-  nome: string
-  preco: number
-  quantidade: number
-  criado_em: string
-}
-
-async function buscarProdutos(): Promise<Produto[]> {
-  const resposta = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/produtos/`, {
-    cache: "no-store",
-  })
-
-  if (!resposta.ok) {
-    throw new Error("Erro ao buscar produtos")
-  }
-
-  return resposta.json()
-}
+import { listarProdutos } from "@/lib/services/produtos"
 
 export default async function ProdutosPage() {
-  const produtos = await buscarProdutos()
+  const produtos = await listarProdutos()
 
   return (
     <div>
